@@ -56,9 +56,19 @@ spork ~ serialPoller();
 int bState[NUM_BUTTONS];
 int bLastState[NUM_BUTTONS];
 
-// send object
-OscOut osc;
-osc.dest("localhost", 12000);
+
+
+
+SndBuf hat => dac;
+SndBuf kick => dac;
+SndBuf snare => dac;
+
+//samples
+load(hat);
+load(kick);
+load(snare);
+
+[kick,snare] @=> SndBuf inst[];
 
 
 while (true)
@@ -77,7 +87,13 @@ fun void buttonUpdate(){
         
         //If the state is different, send an 
         //OSC message of the newstate
-        if(bState[i] != bLastState[i])oscOut("/b" + i, bState[i]);
+        if(bState[i] != bLastState[i]){
+            if(bState[i] == 0){
+                Math.random2f(0.8,1.4) => hat.rate; 
+                0 => hat.pos;
+            }
+            else 0 => inst[i].pos;
+            }
         
         //Replace the state
         bState[i] => bLastState[i];
@@ -85,9 +101,16 @@ fun void buttonUpdate(){
     
 }
 
-// osc sending function
-fun void oscOut(string addr, int val) {
-    osc.start(addr);
-    osc.add(val);
-    osc.send();
+fun void load ( string filename, SndBuf inst )
+
+{
+    me.dir() + "/audio/" + filename + ".wav" => inst.read;
+    inst.samples() => inst.pos;
 }
+fun void load ( string filename)
+
+{
+    me.dir() + "/audio/" + filename + ".wav" => filename.read;
+    inst.samples() => filename.pos;
+}
+
