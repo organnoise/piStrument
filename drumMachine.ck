@@ -56,9 +56,6 @@ spork ~ serialPoller();
 int bState[NUM_BUTTONS];
 int bLastState[NUM_BUTTONS];
 
-
-
-
 SndBuf hat => dac;
 SndBuf kick => dac;
 SndBuf snare => dac;
@@ -69,7 +66,6 @@ load("kick",kick);
 load("snare",snare);
 
 [kick,snare] @=> SndBuf inst[];
-
 
 while (true)
 {
@@ -85,8 +81,9 @@ fun void buttonUpdate(){
         //Second piece of data is that button's value
         if(data[0] == i) data[1] => bState[i];
         
-        //If the state is different, send an 
-        //OSC message of the newstate
+        //If the state is different,  
+        //Play a hat sound on button up, and 
+        //a different sound on button down
         if(bState[i] != bLastState[i]){
             if(bState[i] == 0){
                 Math.random2f(0.8,1.4) => hat.rate; 
