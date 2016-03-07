@@ -64,9 +64,9 @@ SndBuf kick => dac;
 SndBuf snare => dac;
 
 //samples
-load(hat);
-load(kick);
-load(snare);
+load("hat",hat);
+load("kick",kick);
+load("snare",snare);
 
 [kick,snare] @=> SndBuf inst[];
 
@@ -107,10 +107,5 @@ fun void load ( string filename, SndBuf inst )
     me.dir() + "/audio/" + filename + ".wav" => inst.read;
     inst.samples() => inst.pos;
 }
-fun void load ( string filename)
 
-{
-    me.dir() + "/audio/" + filename + ".wav" => filename.read;
-    inst.samples() => filename.pos;
-}
 
